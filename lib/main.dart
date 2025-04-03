@@ -76,23 +76,23 @@ class DrawingPainter extends CustomPainter {
 
 // Wrapper
 class IdleTimeoutWrapper extends StatelessWidget {
-  final Widget child;
+  //final Widget child;
 
-  const IdleTimeoutWrapper({super.key, required this.child});
+  const IdleTimeoutWrapper({super.key/*, required this.child*/});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => IdleBloc()..add(ResetTimer()),
-      child: _DrawingCanvas(child: child),
+      child: _DrawingCanvas(/*child: child*/),
     );
   }
 }
 
 class _DrawingCanvas extends StatelessWidget {
-  final Widget child;
+  //final Widget child;
 
-  const _DrawingCanvas({required this.child});
+  const _DrawingCanvas(/*{required this.child}*/);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,7 @@ class _DrawingCanvas extends StatelessWidget {
           onTap: () => context.read<IdleBloc>().add(ResetTimer()),
           child: Stack(
             children: [
-              child,
+              //child,
               if (!state.isLocked)
                 CustomPaint(
                   painter: DrawingPainter(state.points),
@@ -128,11 +128,12 @@ class _DrawingCanvas extends StatelessWidget {
                 ),
               if (state.isLocked)
                 Container(
-                  color: Colors.black54,
+                  color: Colors.black.withOpacity(0.05), //Colors.black12,
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
                         context.read<IdleBloc>().add(UnlockApp());
+                        context.read<IdleBloc>().add(ResetTimer());
                         //context.read<IdleBloc>().add(ClearPoints());
                       },
                       child: const Icon(
@@ -177,9 +178,9 @@ class MyHomePage extends StatelessWidget {
         title: const Text('Drawing Demo'),
       ),
       body: IdleTimeoutWrapper(
-        child: const Center(
-          child: Text('Draw on the screen when unlocked!'),
-        ),
+        // child: const Center(
+        //   child: Text('Draw on the screen when unlocked!'),
+        // ),
       ),
     );
   }
