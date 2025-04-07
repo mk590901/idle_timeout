@@ -23,7 +23,7 @@ class IdleState {
 
 // BLoC
 class IdleBloc extends Bloc<IdleEvent, IdleState> {
-  static const int _timeoutSeconds = 10;
+  static const int _timeoutSeconds = 5;
   Timer? _idleTimer;
 
   IdleBloc() : super(IdleState(false, [])) {
@@ -38,7 +38,9 @@ class IdleBloc extends Bloc<IdleEvent, IdleState> {
     _idleTimer?.cancel();
     if (!state.isLocked) {
       _idleTimer = Timer(const Duration(seconds: _timeoutSeconds), () {
-        add(LockApp());
+        if (!isClosed) {
+          add(LockApp());
+        }
       });
     }
   }
@@ -59,8 +61,8 @@ class DrawingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 4.0
+      ..color = Colors.orange
+      ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < points.length - 1; i++) {
@@ -76,23 +78,21 @@ class DrawingPainter extends CustomPainter {
 
 // Wrapper
 class IdleTimeoutWrapper extends StatelessWidget {
-  //final Widget child;
 
-  const IdleTimeoutWrapper({super.key/*, required this.child*/});
+  const IdleTimeoutWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => IdleBloc()..add(ResetTimer()),
-      child: _DrawingCanvas(/*child: child*/),
+      child: _DrawingCanvas(),
     );
   }
 }
 
 class _DrawingCanvas extends StatelessWidget {
-  //final Widget child;
 
-  const _DrawingCanvas(/*{required this.child}*/);
+  const _DrawingCanvas();
 
   @override
   Widget build(BuildContext context) {
@@ -120,26 +120,23 @@ class _DrawingCanvas extends StatelessWidget {
           onTap: () => context.read<IdleBloc>().add(ResetTimer()),
           child: Stack(
             children: [
-              //child,
-              if (!state.isLocked)
                 CustomPaint(
                   painter: DrawingPainter(state.points),
                   size: Size.infinite,
                 ),
               if (state.isLocked)
                 Container(
-                  color: Colors.black.withOpacity(0.05), //Colors.black12,
+                  color: Colors.blue.withValues(alpha: 0.3),
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
                         context.read<IdleBloc>().add(UnlockApp());
                         context.read<IdleBloc>().add(ResetTimer());
-                        //context.read<IdleBloc>().add(ClearPoints());
                       },
                       child: const Icon(
                         Icons.lock_open,
                         size: 100,
-                        color: Colors.blueAccent,
+                        color: Colors.purple,
                       ),
                     ),
                   ),
@@ -175,13 +172,24 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Drawing Demo'),
+        title: Text(
+          'Drawing Timeout Demo',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontStyle: FontStyle.normal,
+            shadows: [
+              Shadow(
+                blurRadius: 8.0,
+                color: Colors.indigo,
+                offset: Offset(3.0, 3.0),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Colors.blue,
       ),
-      body: IdleTimeoutWrapper(
-        // child: const Center(
-        //   child: Text('Draw on the screen when unlocked!'),
-        // ),
-      ),
+      body: IdleTimeoutWrapper(),
     );
   }
 }
