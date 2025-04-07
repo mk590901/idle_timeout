@@ -137,7 +137,7 @@ class _DrawingCanvas extends StatelessWidget {
                 Container(
                   color: Colors.blue.withValues(alpha: 0.3),
                   child: Center(
-                    child: _AnimatedLock(
+                    child: AnimatedLock(
                       isTappedNotifier: isTappedNotifier,
                       onUnlock: () {
                         context.read<IdleBloc>().add(UnlockApp());
@@ -156,11 +156,11 @@ class _DrawingCanvas extends StatelessWidget {
 }
 
 // _AnimatedLock widget
-class _AnimatedLock extends StatelessWidget {
+class AnimatedLock extends StatelessWidget {
   final ValueNotifier<bool> isTappedNotifier;
   final VoidCallback onUnlock;
 
-  const _AnimatedLock({required this.isTappedNotifier, required this.onUnlock});
+  const AnimatedLock({super.key, required this.isTappedNotifier, required this.onUnlock});
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +174,7 @@ class _AnimatedLock extends StatelessWidget {
           },
           child: Icon(
             isTapped ? Icons.lock_open : Icons.lock,
-            size: 100,
+            size: 96,
             color: Colors.black26,
           ),
         );
