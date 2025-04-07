@@ -4,13 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Events BLoC
 abstract class IdleEvent {}
+
 class ResetTimer extends IdleEvent {}
+
 class LockApp extends IdleEvent {}
+
 class UnlockApp extends IdleEvent {}
+
 class AddPoint extends IdleEvent {
   final Offset? point;
   AddPoint(this.point);
 }
+
 class ClearPoints extends IdleEvent {}
 
 // State BLoC
@@ -30,7 +35,10 @@ class IdleBloc extends Bloc<IdleEvent, IdleState> {
     on<ResetTimer>(_onResetTimer);
     on<LockApp>((event, emit) => emit(IdleState(true, state.points)));
     on<UnlockApp>((event, emit) => emit(IdleState(false, state.points)));
-    on<AddPoint>((event, emit) => emit(IdleState(state.isLocked, [...state.points, event.point])));
+    on<AddPoint>(
+      (event, emit) =>
+          emit(IdleState(state.isLocked, [...state.points, event.point])),
+    );
     on<ClearPoints>((event, emit) => emit(IdleState(state.isLocked, [])));
   }
 
@@ -60,10 +68,11 @@ class DrawingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.orange
-      ..strokeWidth = 2.0
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = Colors.orange
+          ..strokeWidth = 2.0
+          ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {
@@ -78,7 +87,6 @@ class DrawingPainter extends CustomPainter {
 
 // Wrapper
 class IdleTimeoutWrapper extends StatelessWidget {
-
   const IdleTimeoutWrapper({super.key});
 
   @override
@@ -91,11 +99,12 @@ class IdleTimeoutWrapper extends StatelessWidget {
 }
 
 class _DrawingCanvas extends StatelessWidget {
-
   const _DrawingCanvas();
 
   @override
   Widget build(BuildContext context) {
+    final isTappedNotifier = ValueNotifier<bool>(false);
+
     return BlocBuilder<IdleBloc, IdleState>(
       builder: (context, state) {
         return GestureDetector(
@@ -120,28 +129,53 @@ class _DrawingCanvas extends StatelessWidget {
           onTap: () => context.read<IdleBloc>().add(ResetTimer()),
           child: Stack(
             children: [
-                CustomPaint(
-                  painter: DrawingPainter(state.points),
-                  size: Size.infinite,
-                ),
+              CustomPaint(
+                painter: DrawingPainter(state.points),
+                size: Size.infinite,
+              ),
               if (state.isLocked)
                 Container(
                   color: Colors.blue.withValues(alpha: 0.3),
                   child: Center(
-                    child: GestureDetector(
-                      onTap: () {
+                    child: _AnimatedLock(
+                      isTappedNotifier: isTappedNotifier,
+                      onUnlock: () {
                         context.read<IdleBloc>().add(UnlockApp());
                         context.read<IdleBloc>().add(ResetTimer());
+                        isTappedNotifier.value = false; // Reset state
                       },
-                      child: const Icon(
-                        Icons.lock_open,
-                        size: 100,
-                        color: Colors.purple,
-                      ),
                     ),
                   ),
                 ),
             ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// _AnimatedLock widget
+class _AnimatedLock extends StatelessWidget {
+  final ValueNotifier<bool> isTappedNotifier;
+  final VoidCallback onUnlock;
+
+  const _AnimatedLock({required this.isTappedNotifier, required this.onUnlock});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isTappedNotifier,
+      builder: (context, isTapped, child) {
+        return GestureDetector(
+          onTap: () {
+            isTappedNotifier.value = true;
+            Future.delayed(const Duration(milliseconds: 500), onUnlock);
+          },
+          child: Icon(
+            isTapped ? Icons.lock_open : Icons.lock,
+            size: 100,
+            color: Colors.black26,
           ),
         );
       },
@@ -159,9 +193,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
+    return const MaterialApp(home: MyHomePage());
   }
 }
 
