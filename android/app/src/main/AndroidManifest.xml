@@ -2,7 +2,7 @@
     <application
         android:label="idle_timeout"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/timeout">
         <activity
             android:name=".MainActivity"
             android:exported="true"
