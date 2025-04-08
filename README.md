@@ -4,7 +4,7 @@ The application locks itself if there is no touch in the drawing area for a spec
 
 ## Inside Application
 
-The main widget is IdleTimeoutWrapper will track application activity. It's a stateless widget that is driven by BLoC events and keeps track of itself internal states.
+The main widget is IdleTimeoutWrapper will track application activity. It's a stateless widget that is driven by __BLoC__ events and keeps track of itself internal states.
 
 ### Main Points
 
@@ -47,11 +47,11 @@ The main widget is IdleTimeoutWrapper will track application activity. It's a st
 
 > __Integration__
   * __CustomPaint__ added to _Stack_ in any case
-  * Drawing is active only when the app is unlocked
-  * Timer resets on all interactions
+  * Drawing is active only when the app is __unlocked__
+  * __Timer__ resets on all interactions
   * __AnimatedLock__ added to _Stack_ only when the app is locked
 
-> How it works
+> __How it works__
 * Initially, a closed lock is shown (__Icons.lock__)
 * When pressed, the icon immediately changes to an open lock (__Icons.lock_open__)
 * After 0.5 seconds, the application is unlocked and the icon state is reset
