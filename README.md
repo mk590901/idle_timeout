@@ -4,7 +4,7 @@ The application locks itself if there is no touch in the drawing area for a spec
 
 ## Inside Application
 
-The main widget is IdleTimeoutWrapper will track application activity. It's a stateless widget that is driven by __BLoC__ events and keeps track of itself internal states.
+The main widget is __IdleTimeoutWrapper__ will track application activity. It's a stateless widget that is driven by __BLoC__ events and keeps track of itself internal states.
 
 ### Main Points
 
