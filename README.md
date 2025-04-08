@@ -9,18 +9,37 @@ The main widget is IdleTimeoutWrapper will track application activity. It's a st
 ### Main Points
 
 > __BLoC__
-   * _Events_ defined: __ResetTimer__, __LockApp__, __UnlockApp__
-   * _States_ defined: __UnlockedState__, __LockedState__
-   * _IdleBloc_ manages the timer logic and states
+  * __Events__ defined: __ResetTimer__, __LockApp__, __UnlockApp__, __AddPoint__ and __ClearPoints__
+  * __IdleState__ it's a class with two fields: __isLocked__ and __points__
+  * __IdleBloc__ manages the timer logic and states
      
 > __StatelessWidget__
-   * __IdleTimeoutWrapper__ is stateless
-   * Uses __BlocProvider__ to create __BLoC__
-   * __BlocBuilder__ rebuilds UI when state changes
+  * __IdleTimeoutWrapper__ is stateless
+  * Uses __BlocProvider__ to create __BLoC__
+  * __BlocBuilder__ rebuilds UI when state changes
      
 > __Logic__
-   * _Timer_ is managed in __BLoC__
-   * _Events_ are sent via _context.read<IdleBloc>().add()_
-   * __UI__ only reacts to the current state
+  * _Timer_ is managed in __BLoC__
+  * _Events_ are sent via _context.read<IdleBloc>().add()_
+  * __UI__ only reacts to the current state
 
+> DrawingPainter
+  * Created CustomPainter for drawing lines
+  * Take a list of points and draw lines between them
+  * Uses orange color with line width 2.0
+  * 
+> _DrawingCanvas
+  * StatelessWidget for managing drawing state
+  * Stores a list of points _points
+  * Handles drawing gestures only in unlocked state
+    
+> Drawing logic
+  * onPanStart: starts a new line
+  * onPanUpdate: adds points when moving
+  * onPanEnd: adds null to break line
+
+> Integration
+  * CustomPaint added to Stack in any case
+  * Drawing is active only when the app is unlocked
+  * Timer resets on all interactions
 
