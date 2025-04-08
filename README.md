@@ -1,6 +1,6 @@
 # Idle-Timeout-Flutter
 
-A new Flutter project.
+The application locks itself if there is no touch in the drawing area for a specified time. In this case, the icon of the lock appears on the canvas. By clicking on it, the user unlocks the application and can continue drawing.
 
 ## Getting Started
 
