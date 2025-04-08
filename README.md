@@ -1,4 +1,4 @@
-# idle_timeout
+# Idle-Timeout-Flutter
 
 A new Flutter project.
 
