@@ -23,23 +23,42 @@ The main widget is IdleTimeoutWrapper will track application activity. It's a st
   * _Events_ are sent via _context.read<IdleBloc>().add()_
   * __UI__ only reacts to the current state
 
-> DrawingPainter
-  * Created CustomPainter for drawing lines
+> __DrawingPainter__
+  * Created __CustomPainter__ for drawing lines
   * Take a list of points and draw lines between them
   * Uses orange color with line width 2.0
-  * 
-> _DrawingCanvas
+    
+> ___DrawingCanvas__
   * StatelessWidget for managing drawing state
   * Stores a list of points _points
   * Handles drawing gestures only in unlocked state
+  * Creates a __ValueNotifier<bool>__ to pass to __AnimatedLock__
+  * Resets __isTappedNotifier__ to false after unlocking
     
-> Drawing logic
-  * onPanStart: starts a new line
-  * onPanUpdate: adds points when moving
-  * onPanEnd: adds null to break line
+> __Drawing logic__
+  * __onPanStart__: starts a new line
+  * __onPanUpdate__: adds points when moving
+  * __onPanEnd__: adds null to break line
 
-> Integration
-  * CustomPaint added to Stack in any case
+> __AnimatedLock__
+ * Full StatelessWidget
+ * Accepts a __ValueNotifier<bool>__ to control the icon state
+ * Uses a __ValueListenableBuilder__ to listen for changes to __isTappedNotifier__
+
+> __Integration__
+  * __CustomPaint__ added to _Stack_ in any case
   * Drawing is active only when the app is unlocked
   * Timer resets on all interactions
+  * __AnimatedLock__ added to _Stack_ only when the app is locked
+
+> How it works
+* Initially, a closed lock is shown (__Icons.lock__)
+* When pressed, the icon immediately changes to an open lock (__Icons.lock_open__)
+* After 0.5 seconds, the application is unlocked and the icon state is reset
+
+## Movie
+
+https://github.com/user-attachments/assets/12512087-abc5-4aab-bc20-7118a6689d6d
+
+  
 
