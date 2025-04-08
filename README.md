@@ -8,17 +8,19 @@ The main widget is IdleTimeoutWrapper will track application activity. It's a st
 
 ### Main Points
 
-1. BLoC
-   > _Events_ defined: __ResetTimer__, __LockApp__, __UnlockApp__
-   > _States_ defined: __UnlockedState__, __LockedState__
-   > _IdleBloc_ manages the timer logic and states
-2. StatelessWidget
-   > __IdleTimeoutWrapper__ is stateless
-   > Uses __BlocProvider__ to create __BLoC__
-   > __BlocBuilder__ rebuilds UI when state changes
-3. Logic
-   > _Timer_ is managed in __BLoC__
-   > _Events_ are sent via _context.read<IdleBloc>().add()_
-   > __UI__ only reacts to the current state
+> __BLoC__
+   * _Events_ defined: __ResetTimer__, __LockApp__, __UnlockApp__
+   * _States_ defined: __UnlockedState__, __LockedState__
+   * _IdleBloc_ manages the timer logic and states
+     
+> __StatelessWidget__
+   * __IdleTimeoutWrapper__ is stateless
+   * Uses __BlocProvider__ to create __BLoC__
+   * __BlocBuilder__ rebuilds UI when state changes
+     
+> __Logic__
+   * _Timer_ is managed in __BLoC__
+   * _Events_ are sent via _context.read<IdleBloc>().add()_
+   * __UI__ only reacts to the current state
 
 
