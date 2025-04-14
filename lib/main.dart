@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 
 import 'orientation_bloc.dart';
 
@@ -192,27 +193,38 @@ class AnimatedLock extends StatelessWidget {
 // Sample
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) => OrientationBloc()..add(InitializeOrientation()),
+//       child: MaterialApp(
+//         home: MyHomePage(),
+//       ),
+//     );
+//   }
+// }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => OrientationBloc()..add(InitializeOrientation()),
-      child: MaterialApp(
-        home: MyHomePage(),
-      ),
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return BlocProvider(
+          create: (context) => OrientationBloc()..add(InitializeOrientation(/*context*/)),
+          child: MaterialApp(
+            home: MyHomePage(),
+          ),
+        );
+      },
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const MaterialApp(home: MyHomePage());
-  // }
 }
-
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
@@ -240,7 +252,7 @@ class MyHomePage extends StatelessWidget {
       //body: IdleTimeoutWrapper(),
       body: BlocBuilder<OrientationBloc, OrientationState>(
         builder: (context, state) {
-          final device = state.deviceType == DeviceType.phone ? 'Phone' : 'Tablet';
+          final device = state.deviceType == GagetType.phone ? 'Phone' : 'Tablet';
           return IdleTimeoutWrapper(device: device);
         },
       ),

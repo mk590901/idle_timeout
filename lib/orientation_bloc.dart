@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 
 // BLoC Event
 abstract class OrientationEvent {}
@@ -9,34 +10,42 @@ abstract class OrientationEvent {}
 class InitializeOrientation extends OrientationEvent {}
 
 // BLoC State
-enum DeviceType { phone, tablet }
+enum GagetType { phone, tablet }
 
 class OrientationState {
-  final DeviceType deviceType;
+  final GagetType deviceType;
   OrientationState(this.deviceType);
 }
 
 // BLoC
 class OrientationBloc extends Bloc<OrientationEvent, OrientationState> {
-  OrientationBloc() : super(OrientationState(DeviceType.phone)) {
+  OrientationBloc() : super(OrientationState(GagetType.phone)) {
     on<InitializeOrientation>(_onInitializeOrientation);
   }
 
   void _onInitializeOrientation(
       InitializeOrientation event, Emitter<OrientationState> emit) {
     // Get screen size
-    final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
-    final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    final width = size.width / pixelRatio;
-    final height = size.height / pixelRatio;
-
-    // Calculate diagonal in inches
-    final diagonalInches = sqrt(width * width + height * height) / pixelRatio / 160;
-
-    // Determine device type
-    final isTablet = diagonalInches >= 7.0;
-    final deviceType = isTablet ? DeviceType.tablet : DeviceType.phone;
-
+    // final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+    // final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    // final width = size.width / pixelRatio;
+    // final height = size.height / pixelRatio;
+    //
+    // // Calculate diagonal in inches
+    // final diagonalInches = sqrt(width * width + height * height) / pixelRatio / 160;
+    //
+    // // Determine device type
+    // final isTablet = diagonalInches >= 7.0;
+    //
+    // // final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+    // // final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    // // final shortestSide = (size.shortestSide / pixelRatio);
+    // // bool isTablet = shortestSide >= 600;
+    //
+    // final deviceType = isTablet ? DeviceType.tablet : DeviceType.phone;
+    ScreenType screenType = Device.screenType;
+    bool isTablet = screenType == ScreenType.tablet ? true : false;
+    final deviceType = isTablet ? GagetType.tablet : GagetType.phone;
     // Set orientation
     if (isTablet) {
       SystemChrome.setPreferredOrientations([
