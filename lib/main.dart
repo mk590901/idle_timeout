@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'orientation_bloc.dart';
+
 // Events BLoC
 abstract class IdleEvent {}
 
@@ -87,19 +89,23 @@ class DrawingPainter extends CustomPainter {
 
 // Wrapper
 class IdleTimeoutWrapper extends StatelessWidget {
-  const IdleTimeoutWrapper({super.key});
+  final String device;
+  IdleTimeoutWrapper({super.key, required this.device}) {
+    print(device);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => IdleBloc()..add(ResetTimer()),
-      child: _DrawingCanvas(),
+      child: _DrawingCanvas(device),
     );
   }
 }
 
 class _DrawingCanvas extends StatelessWidget {
-  const _DrawingCanvas();
+  final String device;
+  const _DrawingCanvas(this.device);
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +141,7 @@ class _DrawingCanvas extends StatelessWidget {
               ),
               if (state.isLocked)
                 Container(
-                  color: Colors.blue.withValues(alpha: 0.3),
+                  color: device == 'Phone' ? Colors.blue.withValues(alpha: 0.3) : Colors.orange.withValues(alpha: 0.3),
                   child: Center(
                     child: AnimatedLock(
                       isTappedNotifier: isTappedNotifier,
@@ -155,7 +161,7 @@ class _DrawingCanvas extends StatelessWidget {
   }
 }
 
-// _AnimatedLock widget
+// AnimatedLock widget
 class AnimatedLock extends StatelessWidget {
   final ValueNotifier<bool> isTappedNotifier;
   final VoidCallback onUnlock;
@@ -185,16 +191,26 @@ class AnimatedLock extends StatelessWidget {
 
 // Sample
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
+    return BlocProvider(
+      create: (context) => OrientationBloc()..add(InitializeOrientation()),
+      child: MaterialApp(
+        home: MyHomePage(),
+      ),
+    );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return const MaterialApp(home: MyHomePage());
+  // }
 }
 
 class MyHomePage extends StatelessWidget {
@@ -221,7 +237,13 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: IdleTimeoutWrapper(),
+      //body: IdleTimeoutWrapper(),
+      body: BlocBuilder<OrientationBloc, OrientationState>(
+        builder: (context, state) {
+          final device = state.deviceType == DeviceType.phone ? 'Phone' : 'Tablet';
+          return IdleTimeoutWrapper(device: device);
+        },
+      ),
     );
   }
 }
