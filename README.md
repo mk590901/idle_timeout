@@ -60,5 +60,16 @@ The main widget is __IdleTimeoutWrapper__ will track application activity. It's 
 
 https://github.com/user-attachments/assets/12512087-abc5-4aab-bc20-7118a6689d6d
 
+Another change has been made to the application, which solves the problem of screen orientation. I prefer that the application runs exclusively in __portrait__ mode on the __phone__, and in __landscape__ on the __tablet__.
+
+As know, starting with __Android 14__, the __android:screenOrientation__ attribute in the __application manifest__ is considered obsolete and now the orientation must be set manually in the application. By the way, this solution seems quite reasonable, since setting the orientation in the manifest is too strict a restriction.
+
+Another element has been added to the application: __OrientationBlob__, which determines the device type and sets the orientation of the application according to my above mentioned preference.
+
+To determine the device type, the dart package __Sizer__ is used.
+
+Below is another movie illustrating the launch of the application on a tablet __ Android 14__.
+
+
   
 
