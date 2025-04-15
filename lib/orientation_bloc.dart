@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
@@ -10,42 +8,24 @@ abstract class OrientationEvent {}
 class InitializeOrientation extends OrientationEvent {}
 
 // BLoC State
-enum GagetType { phone, tablet }
+enum GadgetType { phone, tablet }
 
 class OrientationState {
-  final GagetType deviceType;
+  final GadgetType deviceType;
   OrientationState(this.deviceType);
 }
 
 // BLoC
 class OrientationBloc extends Bloc<OrientationEvent, OrientationState> {
-  OrientationBloc() : super(OrientationState(GagetType.phone)) {
+  OrientationBloc() : super(OrientationState(GadgetType.phone)) {
     on<InitializeOrientation>(_onInitializeOrientation);
   }
 
   void _onInitializeOrientation(
       InitializeOrientation event, Emitter<OrientationState> emit) {
-    // Get screen size
-    // final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
-    // final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    // final width = size.width / pixelRatio;
-    // final height = size.height / pixelRatio;
-    //
-    // // Calculate diagonal in inches
-    // final diagonalInches = sqrt(width * width + height * height) / pixelRatio / 160;
-    //
-    // // Determine device type
-    // final isTablet = diagonalInches >= 7.0;
-    //
-    // // final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
-    // // final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    // // final shortestSide = (size.shortestSide / pixelRatio);
-    // // bool isTablet = shortestSide >= 600;
-    //
-    // final deviceType = isTablet ? DeviceType.tablet : DeviceType.phone;
     ScreenType screenType = Device.screenType;
-    bool isTablet = screenType == ScreenType.tablet ? true : false;
-    final deviceType = isTablet ? GagetType.tablet : GagetType.phone;
+    bool isTablet = screenType == ScreenType.mobile ? false : true;
+    final deviceType = isTablet ? GadgetType.tablet : GadgetType.phone;
     // Set orientation
     if (isTablet) {
       SystemChrome.setPreferredOrientations([
@@ -58,7 +38,6 @@ class OrientationBloc extends Bloc<OrientationEvent, OrientationState> {
         DeviceOrientation.portraitDown,
       ]);
     }
-
     emit(OrientationState(deviceType));
   }
 }

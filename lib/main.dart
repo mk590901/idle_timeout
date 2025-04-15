@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-
 import 'orientation_bloc.dart';
 
 // Events BLoC
@@ -91,9 +90,7 @@ class DrawingPainter extends CustomPainter {
 // Wrapper
 class IdleTimeoutWrapper extends StatelessWidget {
   final String device;
-  IdleTimeoutWrapper({super.key, required this.device}) {
-    print(device);
-  }
+  const IdleTimeoutWrapper({super.key, required this.device});
 
   @override
   Widget build(BuildContext context) {
@@ -196,21 +193,9 @@ void main() {
   runApp(MyApp());
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (context) => OrientationBloc()..add(InitializeOrientation()),
-//       child: MaterialApp(
-//         home: MyHomePage(),
-//       ),
-//     );
-//   }
-// }
-
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Sizer(
@@ -249,10 +234,9 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.blue,
       ),
-      //body: IdleTimeoutWrapper(),
       body: BlocBuilder<OrientationBloc, OrientationState>(
         builder: (context, state) {
-          final device = state.deviceType == GagetType.phone ? 'Phone' : 'Tablet';
+          final device = state.deviceType == GadgetType.phone ? 'Phone' : 'Tablet';
           return IdleTimeoutWrapper(device: device);
         },
       ),
